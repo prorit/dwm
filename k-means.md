@@ -1,6 +1,6 @@
 # K-Means Clustering
 
-### **What is K-Mean Clustering?** 
+### **What is K-Means Clustering?** 
 Clustering is an **unsupervised learning** technique, meaning it finds patterns in data without a pre-defined target label. K-Means is the most common clustering algorithm. It groups the data into a specified number (K) of clusters based on their similarity.
 ### **What is the goal of this experiment?** 
 To segment mall customers into groups based on their `Annual Income` and `Spending Score`. This could help a marketing team understand their customers better.
