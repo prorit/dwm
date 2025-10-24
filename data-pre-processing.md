@@ -5,11 +5,11 @@ Real-world data is messy. It can have missing values, text instead of numbers, o
 
 ### **What is the goal of this experiment?**
 To take a messy sample dataset and clean it by:
-    1.  Handling missing numerical values.
-    2.  Converting categorical (text) data into numbers.
-    3.  Splitting data for training and testing.
-    4.  Scaling the features.
-
+1. Handling missing numerical values.
+2. Converting categorical (text) data into numbers.
+3. Splitting data for training and testing.
+4. Scaling the features.
+---
 ### Understanding the Code (Step-by-Step)
 
 1.  **Load Data and Separate:**
