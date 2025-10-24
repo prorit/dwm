@@ -47,3 +47,48 @@ To analyze a list of grocery transactions and find association rules, like "IF a
     ```
 
       * This converts the output into a list and prints it. Each item in the list (`RelationRecord`) is a rule found by the algorithm, along with its support and confidence values. You can examine these rules to find interesting patterns.
+
+---
+
+### Example:
+
+```python
+# --- Step 1: Install apyori if you haven't already ---
+# In Jupyter or Spyder, you might need to run: !pip install apyori
+
+# --- Step 2: Import libraries ---
+import pandas as pd
+from apyori import apriori
+
+# --- Step 3: Load and prepare the data ---
+# Make sure 'Market_Basket_Optimisation.csv' is in the same folder.
+# The data needs to be a list of lists, where each inner list is one transaction.
+dataset = pd.read_csv('Market_Basket_Optimisation.csv', header=None)
+transactions = []
+for i in range(len(dataset)):
+    # Convert each transaction (row) into a list of strings
+    transactions.append([str(dataset.values[i, j]) for j in range(dataset.shape[1]) if str(dataset.values[i, j]) != 'nan'])
+
+# --- Step 4: Train the Apriori model ---
+# min_support: Considers items that appear in at least 0.3% of transactions.
+# min_confidence: A rule "A -> B" must be correct at least 20% of the time.
+# min_lift: Measures how much more likely item B is purchased when A is purchased.
+# min_length=2: We want rules with at least two items (e.g., A -> B).
+rules = apriori(transactions=transactions, min_support=0.003, min_confidence=0.2, min_lift=3, min_length=2)
+
+# --- Step 5: Display the results in a readable format ---
+results = list(rules)
+print("--- Discovered Association Rules ---")
+
+for item in results:
+    # Extract items from the rule
+    pair = item[0]
+    items = [x for x in pair]
+    
+    # Print the rule and its metrics
+    print(f"Rule: {items[0]} -> {items[1]}")
+    print(f"Support: {item[1]:.4f}")
+    print(f"Confidence: {item[2][0][2]:.4f}")
+    print(f"Lift: {item[2][0][3]:.4f}")
+    print("="*40)
+```
