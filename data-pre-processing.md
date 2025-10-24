@@ -76,3 +76,54 @@ To take a messy sample dataset and clean it by:
     ```
 
       * This rescales the numerical columns (Age and Salary) so they have a similar range. This prevents one feature from dominating the others just because its numbers are bigger.
+---
+
+### Example:
+
+```python
+# --- Step 1: Import necessary libraries ---
+import numpy as np
+import pandas as pd
+from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder, StandardScaler
+from sklearn.compose import ColumnTransformer
+from sklearn.model_selection import train_test_split
+
+# --- Step 2: Load the dataset and separate features from the target ---
+# Make sure 'Data.csv' is in the same folder as your script.
+dataset = pd.read_csv('Data.csv')
+X = dataset.iloc[:, :-1].values  # Features (all columns except the last one)
+y = dataset.iloc[:, -1].values   # Target (the last column)
+
+# --- Step 3: Handle missing numerical data ---
+# We will replace missing numbers (NaN) with the mean of the column.
+imputer = SimpleImputer(missing_values=np.nan, strategy='mean')
+imputer.fit(X[:, 1:3]) # Fit on Age and Salary columns
+X[:, 1:3] = imputer.transform(X[:, 1:3])
+
+# --- Step 4: Encode categorical features ---
+# Convert the 'Country' column into numerical data using One-Hot Encoding.
+ct = ColumnTransformer(transformers=[('encoder', OneHotEncoder(), [0])], remainder='passthrough')
+X = np.array(ct.fit_transform(X))
+
+# --- Step 5: Encode the target variable ---
+# Convert 'Yes'/'No' labels into 1/0.
+le = LabelEncoder()
+y = le.fit_transform(y)
+
+# --- Step 6: Split the dataset into Training and Test sets ---
+# 80% of data will be for training, 20% for testing.
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
+
+# --- Step 7: Feature Scaling ---
+# Scale the Age and Salary columns to a standard range.
+sc = StandardScaler()
+X_train[:, 3:] = sc.fit_transform(X_train[:, 3:])
+X_test[:, 3:] = sc.transform(X_test[:, 3:])
+
+# --- Step 8: Print the processed data ---
+print("--- Processed Training Features (X_train) ---")
+print(X_train)
+print("\n--- Processed Test Features (X_test) ---")
+print(X_test)
+```
