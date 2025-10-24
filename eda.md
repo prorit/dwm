@@ -61,3 +61,59 @@ To explore the famous "Iris" flower dataset to understand its structure and the 
         stats.probplot(iris_d['petal_length'], dist="norm", plot=plt)
         ```
         This plot is used to check if your data follows a specific distribution, in this case, a **normal distribution** (a bell curve). If the blue dots follow the red line closely, the data is normally distributed.
+---
+
+### Example
+
+```python
+# --- Step 1: Import necessary libraries ---
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+import scipy.stats as stats
+
+# --- Step 2: Load the dataset ---
+# Seaborn has some built-in datasets, which makes it easy to start
+iris_df = sns.load_dataset("iris")
+
+# or you can load your own dataset
+# iris_df = sns.load_dataset("DATASET_PATH")
+
+# --- Step 3: Perform Initial Inspection ---
+print("--- First 5 Rows ---")
+print(iris_df.head())
+
+print("\n--- Basic Information ---")
+iris_df.info()
+
+print("\n--- Statistical Summary ---")
+print(iris_df.describe())
+
+# --- Step 4: Create Visualizations ---
+
+# Histogram: Shows the distribution of a single variable.
+plt.figure(figsize=(10, 6))
+plt.hist(iris_df['sepal_width'], bins=15, color='skyblue', edgecolor='black')
+plt.title('Distribution of Sepal Width')
+plt.xlabel('Sepal Width')
+plt.ylabel('Frequency')
+plt.show()
+
+# Box Plot: Shows the median, quartiles, and identifies outliers.
+plt.figure(figsize=(10, 6))
+sns.boxplot(x="species", y="petal_length", data=iris_df)
+plt.title('Petal Length by Species')
+plt.show()
+
+# Scatter Plot: Shows the relationship between two variables.
+plt.figure(figsize=(10, 6))
+sns.scatterplot(x='sepal_length', y='sepal_width', hue='species', data=iris_df)
+plt.title('Sepal Length vs. Sepal Width')
+plt.show()
+
+# Q-Q Plot: Checks if data follows a normal distribution.
+plt.figure(figsize=(10, 6))
+stats.probplot(iris_df['petal_length'], dist="norm", plot=plt)
+plt.title('Q-Q Plot for Petal Length')
+plt.show()
+```
