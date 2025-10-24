@@ -53,3 +53,58 @@ To segment mall customers into groups based on their `Annual Income` and `Spendi
 
       * This creates a scatter plot where each cluster is a different color.
       * `kmeans.cluster_centers_` are the coordinates of the center of each cluster, which are plotted as large yellow stars. The plot clearly shows the 5 distinct customer segments.
+
+---
+
+### Example
+
+```python
+# --- Step 1: Import necessary libraries ---
+import matplotlib.pyplot as plt
+import pandas as pd
+from sklearn.cluster import KMeans
+
+# --- Step 2: Load the dataset ---
+# Make sure 'Mall_Customers.csv' is in the same folder.
+dataset = pd.read_csv('Mall_Customers.csv')
+# We select 'Annual Income' (column 3) and 'Spending Score' (column 4)
+X = dataset.iloc[:, [3, 4]].values
+
+# --- Step 3: Use the Elbow Method to find the optimal number of clusters ---
+wcss = [] # Within-Cluster Sum of Squares
+for i in range(1, 11):
+    kmeans = KMeans(n_clusters=i, init='k-means++', random_state=42, n_init=10)
+    kmeans.fit(X)
+    wcss.append(kmeans.inertia_)
+
+# Plot the Elbow graph
+plt.figure(figsize=(10, 6))
+plt.plot(range(1, 11), wcss, marker='o', linestyle='--')
+plt.title('The Elbow Method')
+plt.xlabel('Number of clusters (K)')
+plt.ylabel('WCSS')
+plt.grid(True)
+plt.show()
+
+# --- Step 4: Train the K-Means model with the optimal K (which is 5) ---
+kmeans = KMeans(n_clusters=5, init='k-means++', random_state=42, n_init=10)
+y_kmeans = kmeans.fit_predict(X)
+
+# --- Step 5: Visualize the clusters ---
+plt.figure(figsize=(12, 8))
+colors = ['red', 'blue', 'green', 'cyan', 'magenta']
+labels = ['Cluster 1', 'Cluster 2', 'Cluster 3', 'Cluster 4', 'Cluster 5']
+
+for i in range(5):
+    plt.scatter(X[y_kmeans == i, 0], X[y_kmeans == i, 1], s=100, c=colors[i], label=labels[i])
+
+# Plot the centroids
+plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=300, c='yellow', marker='*', label='Centroids', edgecolor='black')
+
+plt.title('Clusters of Mall Customers')
+plt.xlabel('Annual Income (k$)')
+plt.ylabel('Spending Score (1-100)')
+plt.legend()
+plt.grid(True)
+plt.show()
+```
