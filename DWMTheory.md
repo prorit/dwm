@@ -18,8 +18,8 @@ The basic building blocks of a Data Warehouse are:
 
 
 
-[Image of Data Warehouse Architecture building blocks]
-
+![Image of Data Warehouse Architecture building blocks](https://encrypted-tbn1.gstatic.com/licensed-image?q=tbn:ANd9GcRaIy3_n4ygjN5oCrWmew0xW5AgQVitDhIYJNa1tmisbYiMyhcjo938RVLC_dmsaBBisla1zjUjh5yQmhqWEBxDsoi2kBAvDlFY4ONL4T4t-7okTCQ)
+*Image of Data Warehouse Architecture building blocks*
 
 ---
 
@@ -66,13 +66,12 @@ The basic building blocks of a Data Warehouse are:
 
 
 
-[Image of Star Schema diagram]
+![Image of Star Schema diagram](https://media.datacamp.com/cms/ad_4nxeirbnvstc1ibrai582rsg0yhw8crhrmftnlubc-bhmonjgjvrmc9ocrr4ylxgbukkmgvtk9pxkvnwaei5by7ccn5ow3wzq8_wipmhylwbtwzdy_yt2rxleil-dhcorcnjp7hlx.png)
+*Image of Star Schema diagram*
 
 
-
-
-[Image of Snowflake Schema diagram]
-
+![Image of Snowflake Schema diagram](https://media.datacamp.com/cms/ad_4nxcythn-86q_c4ey8jj_4uqlcszyxj6ihckm-4kajmbkaqu1fdnleti2ma43fwva6ed9urbjfo4-oi7ckr1ap5iurgizdumsthlszrzhotcqnmqoxzyjj5nzlyk4npififk-oru1ua.png)
+*Image of Snowflake Schema diagram*
 
 ---
 
@@ -89,6 +88,8 @@ OLAP (Online Analytical Processing) operations allow for the multidimensional an
 4.  **Dice:** Selects a sub-cube by specifying a range of values or multiple values for two or more dimensions.
     * *Example:* Dicing the cube to see sales where `Time = 'Q1-2025' OR 'Q2-2025'` AND `Location = 'New York' OR 'Chicago'`.
 
+![](https://github.com/user-attachments/assets/18c023dd-9e6a-4da9-9df9-1dc26f639de4)
+*Image of OLAP Operations*
 ---
 
 ### 6. Updates to Dimensional Table (SCD Types)
@@ -142,7 +143,6 @@ A **Fact Constellation Schema**, also known as a "Family of Stars," consists of 
 For example, a retail warehouse might have a `Sales` fact table and a `Shipping` fact table. Both of these fact tables would share common dimensions like `Time`, `Product`, and `Store`. This structure allows for complex analyses by combining metrics from different business processes using the shared dimensions.
 
 
-
 ---
 
 ### 10. Data Loading Techniques
@@ -180,14 +180,12 @@ The KDD process is a multi-step approach to extract useful knowledge from raw da
 6.  **Knowledge Representation/Presentation:** Presenting the validated knowledge to the user in an understandable format.
 7.  **Knowledge Deployment:** Integrating the discovered knowledge into business processes.
 
+![Image of KDD](https://www.scaler.com/topics/images/kdd-in-data-mining-1.webp)
+*Image of KDD*
+
 ---
 
 ### 13. Steps Involved in Data Preprocessing
-
-
-
-[Image of Data Preprocessing steps]
-
 
 Data preprocessing prepares raw data for mining. The main steps are:
 
@@ -295,12 +293,14 @@ Noisy data (random error or variance) is handled using smoothing techniques:
 
 ### 20. Differentiate between Supervised and Unsupervised Learning
 
-* **Supervised Learning (e.g., Classification):**
-    * **Training Data:** The algorithm is trained on a dataset that is **labeled** with predefined class labels (e.g., `Spam`/`Not Spam`).
-    * **Goal:** To learn a model that can predict the class label for new, unseen data.
-* **Unsupervised Learning (e.g., Clustering):**
-    * **Training Data:** The algorithm is trained on a dataset that is **unlabeled**.
-    * **Goal:** To discover hidden structures or "clusters" in the data, grouping similar data points together.
+| Feature | 🧠 Supervised Learning | 🔍 Unsupervised Learning |
+| :--- | :--- | :--- |
+| **Data Used** | **Labeled** data (with predefined class labels). | **Unlabeled** data. |
+| **Primary Goal** | **Predict** the output label for new, unseen data. | **Discover** hidden structures or patterns in the data. |
+| **Nature of Task** | Mapping input to a known output (Function Approximation). | Identifying hidden groupings or relationships. |
+| **Common Tasks** | **Classification** (discrete output) and **Regression** (continuous output). | **Clustering**, Dimensionality Reduction, Association Rule Mining. |
+| **Examples** | Email Spam Detection, Image Classification, Price Prediction. | Customer Segmentation, Market Basket Analysis, Data Compression. |
+| **Feedback** | Direct feedback on the correctness of predictions during training. | No direct feedback; the system assesses how similar inputs are. |
 
 ---
 
@@ -321,10 +321,7 @@ A **Decision Tree** is a flowchart-like structure where:
 3.  The dataset is divided into subsets based on the split.
 4.  This process is repeated recursively until a stopping condition is met.
 
-
-
-[Image of a simple Decision Tree]
-
+![Image of a simple Decision Tree](https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcRHO_LrOlGaWlwqBeoSs7CSx9bCj8B-JzXIxrr-jkbw1vcMOPKSm16QuLrDuuvFhEkNtLGwlSK6nu26oKXmnMvKLJLPfPQ0VrSZiST0TvfkfBGuejM)
 
 ---
 
@@ -365,17 +362,13 @@ The key issues are:
 
 **How it Predicts:** The **Naïve Bayes classifier** is a statistical method based on **Bayes' Theorem**. It predicts the probability $P(C|X)$ of a sample $X$ belonging to a class $C$. The class with the highest probability is the prediction.
 
-The formula is:
-$$
-P(C|X) = \frac{P(X|C) \times P(C)}{P(X)}
-$$
+The formula is: 
+$P(C|X) = \frac{P(X|C) \times P(C)}{P(X)}$
 
 **The "Naive" Assumption:** To make the calculation of $P(X|C)$ feasible, the algorithm makes a "naive" assumption: **It assumes that all attributes are conditionally independent of each other, given the class.**
 
 This simplifies the term $P(X|C)$ to a simple product:
-$$
-P(X|C) = P(x_1|C) \times P(x_2|C) \times \dots \times P(x_n|C)
-$$
+$$P(X|C) = P(x_1|C) \times P(x_2|C) \times \dots \times P(x_n|C)$$
 Even though this assumption is often false in the real world, the classifier performs surprisingly well in many applications.
 
 ---
@@ -409,9 +402,36 @@ Even though this assumption is often false in the real world, the classifier per
 
 ### 28. K-Medoids Clustering Algorithm
 
-**K-Medoids** (like PAM - Partitioning Around Medoids) is a partitioning algorithm similar to K-Means, but it uses **medoids** as cluster centers, which are **actual data points** from the dataset. A medoid is the most centrally located object within a cluster.
+**K-Medoids** (also known as **Partitioning Around Medoids, or PAM**) is an unsupervised partitioning clustering algorithm similar to K-Means. The core difference is that it uses an **actual data point** from the dataset, called a **medoid**, as the center of the cluster, instead of a calculated mean (**centroid**).
 
 **Advantage over K-Means:** K-Medoids is **more robust to noise and outliers** because it uses an actual data point as the center, unlike the mean (centroid), which can be easily skewed by extreme values.
+
+#### Algorithm Steps:
+
+The PAM algorithm works by iteratively finding the best representative object (the medoid) for each cluster:
+
+1.  **Initialization:**
+    * Select the number of clusters, $K$.
+    * Randomly select $K$ objects from the dataset to serve as the initial **medoids** ($M_1, M_2, \dots, M_K$).
+2.  **Assignment Step:**
+    * Assign every remaining non-medoid object to the cluster represented by its **nearest medoid**. Distance is typically measured using metrics like Manhattan distance.
+    * Calculate the initial **cost** (or error) of the configuration, usually defined as the sum of all distances between objects and their assigned medoids.
+3.  **Optimization (Swap) Step:**
+    * Randomly select a **non-medoid object** ($O_{random}$).
+    * The algorithm attempts to swap the current medoid ($M_i$) with the non-medoid object ($O_{random}$).
+    * Calculate the new total clustering cost after the hypothetical swap.
+    * If the total cost **decreases** (meaning the swap is an improvement), the swap is executed, and $O_{random}$ becomes the new medoid for that cluster.
+    * If the cost does not decrease, the swap is rejected, and the original medoid ($M_i$) is retained.
+4.  **Repeat:**
+    * Repeat the Assignment and Optimization steps until the medoids no longer change or the clustering cost cannot be further reduced.
+
+#### Key Advantages over K-Means:
+
+| Feature | K-Medoids (PAM) | K-Means |
+| :--- | :--- | :--- |
+| **Cluster Center** | **Medoid** (an actual data point). | **Centroid** (a calculated mean/average). |
+| **Robustness to Outliers** | **High**. It is less influenced by outliers. | **Low**. Outliers can heavily skew the calculated mean. |
+| **Data Types** | Handles any type of data for which a distance measure can be defined. | Requires numeric data for calculating the mean. |
 
 ---
 
@@ -422,7 +442,7 @@ A **Dendrogram** is a tree-like diagram used to visualize the results of **hiera
 * The Y-axis represents the distance or dissimilarity.
 * The X-axis lists the individual data objects.
 * By cutting the dendrogram horizontally, you can determine a flat set of clusters.
-
+  
 ---
 
 ### 30. Differentiate between Agglomerative and Divisive Clustering
@@ -449,7 +469,7 @@ These are the two types of hierarchical clustering:
 
 ## 📈 Module 5: Mining Frequent Patterns
 
-### 32. Market Basket Analysis with an Example
+### 32. Market Basket Analysis (Apriori Algorithm) with an Example
 
 **Market Basket Analysis** is a data mining technique used to discover purchase patterns by analyzing customer transaction data. It aims to find **association rules** that identify which items are frequently bought together.
 
@@ -457,9 +477,21 @@ These are the two types of hierarchical clustering:
 * *Example:* The rule **`{Bread, Butter} -> {Milk}`** means customers who buy bread and butter are also likely to buy milk.
 * **Key Metrics:**
     1.  **Support:** The percentage of total transactions that contain *all* items in the rule.
-    2.  **Confidence:** The probability that the {Consequent} will be purchased, given that the {Antecedent} was purchased.
-    3.  **Lift:** Measures how much more likely the Consequent is purchased when the Antecedent is present. (Lift $> 1$ indicates a positive association).
+    2.  **Confidence:** The probability that the **`{Consequent}`** will be purchased, given that the **`{Antecedent}`** was purchased.
+    3.  **Lift:** Measures how much more likely the **`{Consequent}`** is purchased when the **`{Antecedent}`** is present. (Lift $-1$ indicates a positive association).
+ 
 
+#### The Apriori Algorithm:
+
+The Apriori algorithm is based on the **Apriori Principle**:
+> **If an itemset is frequent, then all of its subsets must also be frequent.**
+
+1.  **Find Frequent 1-Itemsets ($L_1$):** Scan the database once to count the support for every single item.
+    * Remove any item that does not meet the predefined minimum support threshold.
+2.  **Generate Candidate 2-Itemsets ($C_2$):** Use the frequent 1-itemsets ($L_1$) to generate candidate pairs.
+3.  **Find Frequent 2-Itemsets ($L_2$):** Scan the database to count the support for the candidates in $C_2$.
+    * Prune candidates that fail the minimum support test.
+4.  **Repeat:** This process repeats for $k$-itemsets ($L_k$) until no more frequent itemsets are found.
 ---
 
 ### 33. FP-Growth Algorithm / FP Tree
@@ -516,9 +548,7 @@ It uses a compact data structure called an **FP-Tree (Frequent Pattern Tree)**.
 
 * **Core Idea:** A link from Page A to Page B is a "vote" from A for B. A vote from an important page counts for more.
 * **The Algorithm:** The PageRank (PR) of a page $P$ is calculated iteratively using the formula:
-    $$
-    \text{PR}(P) = (1-d) + d \times \sum_{i \in \text{In-links}} \frac{\text{PR}(i)}{\text{OutDeg}(i)}
-    $$
+    $\text{PR}(P) = (1-d) + d \times \sum_{i \in \text{In-links}} \frac{\text{PR}(i)}{\text{OutDeg}(i)}$
     * The term $d$ is the **damping factor** (usually $0.85$), representing the probability a user will click a link.
     * The algorithm repeats until the ranks stabilize.
 
