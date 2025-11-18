@@ -1,3 +1,10 @@
+# DWM
+
+* [DWM Theory](DWMTheory.md)
+* [DWM QB](DWMQB.md)
+
+---
+
 # Data Warehouse Mining Exps
 
 1. [Design Star Schema](star-schema.md)
@@ -7,4 +14,4 @@
 5. [Implement classification algorithm (Decision tree)](decision-tree-classification.md)
 6. [Implement Kmeans clustering algorithm](k-means.md)
 7. [Implement frequent pattern mining algorithm (Apriori)](apriori.md)
-8. [Implement page rank algorithm](page-rank-algo.md) 
+8. [Implement page rank algorithm](page-rank-algo.md)
