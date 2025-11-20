@@ -1,306 +1,291 @@
 # 📚 Distributed Databases & NoSQL: Exam Syllabus Guide
 
-### **Module 1: Distributed Databases**
+## Module 1: Distributed Databases
 
-#### **1. Explain Distributed DBMS Architecture.**
+### 1\. Explain Data Fragmentation in Distributed Databases.
 
-**Answer:**
-The architecture of a Distributed Database Management System (DDBMS) defines how the system components are organized and how they interact. It is typically divided into three levels:
+**Fragmentation** is the process of dividing a single logical relation (table) into smaller segments called fragments, which can be stored at different sites. This improves efficiency by placing data closer to where it is most frequently used.
 
-1.  **Internal Level (Physical Level):**
-      * Deals with the physical storage of data at each site.
-      * Handles local schema, data placement, and local transaction management.
-2.  **Conceptual Level:**
-      * Provides a **Global Conceptual Schema** (GCS) which is a logical view of the entire database as if it were centralized.
-      * Hides the details of data distribution (fragmentation and replication) from the user.
-3.  **External Level (User Level):**
-      * Defines user views. Users interact with the database without knowing where data is located (Location Transparency).
+  * **Types of Fragmentation:**
+    1.  **Horizontal Fragmentation:** Divides the relation into tuples (rows). It uses a selection operation ($\sigma$) based on a predicate (condition).
+          * *Example:* Splitting a `Customer` table into `Customer_NewYork` and `Customer_London` based on the `City` column.
+          * *Reconstruction:* Done using the **Union** operation.
+    2.  **Vertical Fragmentation:** Divides the relation into attributes (columns). It uses the projection operation ($\pi$). The Primary Key must be included in all fragments to allow reconstruction.
+          * *Example:* Splitting `Employee` into `Emp_Personal` (ID, Name, Address) and `Emp_Professional` (ID, Salary, Dept).
+          * *Reconstruction:* Done using the **Join** operation on the Primary Key.
+    3.  **Hybrid (Mixed) Fragmentation:** A combination of horizontal and vertical fragmentation. A table is first fragmented horizontally, and those fragments are then fragmented vertically (or vice versa).
 
-**Types of Architectures:**
+### 2\. Explain Allocation techniques for Distributed Database Design.
 
-  * **Client-Server:** Tasks are split between client (UI/Request) and server (Data management).
-  * **Peer-to-Peer:** All nodes are equal; each can act as a client or server. No central controller.
-  * **Multi-DBMS:** A federation of autonomous databases (potentially heterogeneous) that cooperate.
+**Data Allocation** determines where the fragments or the entire database should be physically stored across the computer network.
 
-#### **2. Explain Homogenous and Heterogeneous Distributed Database Systems.**
+  * **Allocation Strategies:**
+    1.  **Fragmented (Partitioned) Allocation:** The database is fragmented, and each fragment is stored at exactly one site. There is **no replication**.
+          * *Pros:* Low storage cost; easy updates (no synchronization needed).
+          * *Cons:* Low availability (if a site fails, data is lost); poor performance for queries accessing remote data.
+    2.  **Full Replication:** A complete copy of the entire database is stored at every site in the network.
+          * *Pros:* High availability; fast local reading.
+          * *Cons:* Very high storage cost; slow updates (must update all copies to maintain consistency).
+    3.  **Partial Replication:** Only frequently accessed fragments are replicated at specific sites, while others are stored as single copies.
+          * *Pros:* Balances storage costs and availability.
+          * *Cons:* Complex management of copies.
 
-**Answer:**
+### 3\. Explain Distributed DBMS Architecture in details.
 
-  * **Homogeneous Distributed Databases:**
+Distributed DBMS architecture defines how the system components interact.
 
-      * **Definition:** All sites in the system use the **same DBMS software** (e.g., all sites run Oracle or all run MySQL).
-      * **Characteristics:** They share a common global schema. Data exchange and transaction management are easier because the software is compatible.
-      * **Pros:** Easier to design and manage; high performance.
-      * **Cons:** Less flexible; difficult to integrate legacy systems.
+  * **Client-Server Architecture:**
+      * **Client:** Handles the user interface and local processing. It sends database requests to the server.
+      * **Server:** Handles data storage, query processing, transaction management, and optimization.
+      * *Multiple Client-Single Server:* All clients access one central DB (simpler).
+      * *Multiple Client-Multiple Server:* Clients access data distributed across multiple servers.
+  * **Peer-to-Peer Architecture:**
+      * There is no distinction between client and server. Every site (node) has full DBMS functionality.
+      * Each site acts as a server for other sites and a client for its own local users.
+      * More complex but offers better scalability and reliability.
+  * **Multi-Database System (MDBS) Architecture:**
+      * A collection of autonomous, pre-existing databases integrated to look like one system.
+      * **Loosely Coupled:** Users must know the schema of each local DB.
+      * **Tightly Coupled:** A Global Conceptual Schema (GCS) unifies all local schemas, providing location transparency.
 
-  * **Heterogeneous Distributed Databases:**
+### 4\. Differentiate between Centralized and Distributed Database.
 
-      * **Definition:** Different sites run **different DBMS software** (e.g., Site A runs Oracle, Site B runs SQL Server, Site C runs MongoDB).
-      * **Characteristics:** Each site may have its own schema and query language. A translation layer (middleware or gateway) is often required to map the global schema to local schemas.
-      * **Pros:** Allows integration of existing legacy databases.
-      * **Cons:** Complex query processing (translation required); difficult transaction management (2PC is harder to implement).
-
-#### **3. Explain Client/Server Database Architecture.**
-
-**Answer:**
-In this architecture, the processing is divided between two types of modules:
-
-1.  **Client (Front-end):**
-      * Responsible for the user interface and accepting user queries.
-      * Does not manage data directly.
-      * Sends database requests (SQL) to the server.
-      * Example: A web application or a desktop GUI.
-2.  **Server (Back-end):**
-      * Responsible for data storage, access control, query processing, and transaction management.
-      * Processes the request sent by the client and returns the result.
-      * **Multiple Client-Single Server:** Standard setup.
-      * **Multiple Client-Multiple Server:** The server may distribute the query to other servers if data is distributed.
-
-**Advantages:**
-
-  * Reduces network traffic (only query and result travel, not raw data).
-  * Centralized data management (easier security and backup).
-
-#### **4. What are data replication and allocation techniques for Distributed database design?**
-
-**Answer:**
-**Data Replication:**
-The process of storing copies of the same data at multiple sites to increase availability and reliability.
-
-  * **Full Replication:** The entire database is stored at every site. (High availability, slow updates).
-  * **Partial Replication:** Only frequently accessed fragments are replicated.
-  * **No Replication:** Each fragment exists at only one site.
-
-**Allocation Techniques:**
-The process of deciding *where* to store data fragments.
-
-1.  **Centralized:** All data at one site (Simple, but single point of failure).
-2.  **Fragmented (Partitioned):** Data is split into disjoint fragments and stored at specific sites where they are used most.
-3.  **Replicated:** Copies of fragments are maintained at multiple sites.
-      * **Static Allocation:** Data placement is fixed during design.
-      * **Dynamic Allocation:** Data moves based on access patterns (complex).
-
-#### **5. Explain Database fragmentation (Horizontal, Vertical, Mixed) and its benefits.**
-
-**Answer:**
-Fragmentation divides a global relation into smaller logical units called fragments.
-
-1.  **Horizontal Fragmentation:**
-      * Splits the table by **rows** (tuples) based on a condition (Selection operation $\sigma$).
-      * *Example:* `Employee` table split into `Emp_NY` (City='NY') and `Emp_LA` (City='LA').
-      * **Reconstruction:** Union ($\cup$) of fragments.
-2.  **Vertical Fragmentation:**
-      * Splits the table by **columns** (attributes) (Projection operation $\Pi$). Each fragment must include the Primary Key to allow reconstruction.
-      * *Example:* `Employee` table split into `Emp_Personal` (ID, Name, Address) and `Emp_Work` (ID, Salary, Dept).
-      * **Reconstruction:** Join ($\bowtie$) on Primary Key.
-3.  **Mixed (Hybrid) Fragmentation:**
-      * Applies both horizontal and vertical fragmentation.
-
-**Benefits:**
-
-  * **Efficiency:** Data is stored close to where it is used (Data Localization).
-  * **Parallelism:** Queries can run on multiple fragments simultaneously.
-  * **Security:** Sensitive columns (like Salary) can be stored at secure sites only.
+| Feature | Centralized Database | Distributed Database |
+| :--- | :--- | :--- |
+| **Location** | All data resides at a single physical site/server. | Data is spread across multiple sites connected by a network. |
+| **Failure** | Single point of failure. If the site crashes, the system stops. | High reliability. If one site fails, others continue to function. |
+| **Scalability** | Vertical scaling (add more power to one machine). Harder to scale. | Horizontal scaling (add more machines). Easier to scale. |
+| **Complexity** | Low complexity in concurrency and recovery. | High complexity (requires 2PC, distributed locking, etc.). |
+| **Access Speed** | Slower for remote users. | Faster if data is located near the user. |
 
 -----
 
-### **Module 2: Distributed Database Handling**
+## Module 2: Distributed Database Handling
 
-#### **6. Discuss the phases of distributed query processing with a neat diagram.**
+### 5\. Explain phases in Distributed Query processing with neat diagram.
 
-**Answer:**
-Distributed query processing transforms a high-level query into an efficient execution strategy.
+Distributed query processing involves four layers to transform a high-level query into a low-level execution plan.
 
 1.  **Query Decomposition:**
-      * Parses the calculus query (SQL) into an algebraic query.
-      * Performs normalization, analysis, simplification, and rewriting.
+      * Input: Calculus query on Global Relations.
+      * Action: Normalizes the query, analyzes it for errors, eliminates redundancy, and rewrites it into Relational Algebra.
+      * Output: Algebraic Query on Global Relations.
 2.  **Data Localization:**
-      * Uses the **Fragment Schema** to map the global query onto specific fragments.
-      * Determines which fragments are involved (e.g., Union of horizontal fragments).
+      * Input: Algebraic Query on Global Relations.
+      * Action: Uses the **Fragmentation Schema** to determine which fragments contain the requested data. It replaces global relations with fragments (unions/joins).
+      * Output: Fragment Query.
 3.  **Global Query Optimization:**
-      * Finds the best execution strategy (ordering of joins, semijoins) to minimize cost (usually communication cost).
-      * Output: Global Execution Plan.
-4.  **Distributed Query Execution:**
-      * Local optimization happens at each site.
-      * Sub-queries are executed, and data is transferred to the final site.
+      * Input: Fragment Query.
+      * Action: Finds the most efficient strategy to execute the query. It focuses on minimizing **Communication Cost** (data transfer between sites) and decides the order of joins (often using Semijoins).
+      * Output: Distributed Execution Plan.
+4.  **Distributed Execution:**
+      * Input: Execution Plan.
+      * Action: The plan is sent to local sites. Each site performs local optimization and executes its sub-query.
 
-#### **7. Describe query evaluation plan.**
+### 6\. Explain ACID properties.
 
-**Answer:**
-A **Query Evaluation Plan (or Execution Plan)** is a sequence of primitive operations (relational algebra operations like select, project, join) annotated with instructions on how to execute them.
+ACID properties ensure the reliability of transactions.
 
-  * It specifies **algorithms** for each operation (e.g., Merge Join vs. Hash Join).
-  * It specifies **indices** to use (e.g., Use B+ Tree on ID).
-  * It determines the **order** of operations.
-  * In distributed systems, it also specifies **data transfer** strategies (shipping raw data vs shipping results).
-  * The Query Optimizer generates multiple plans and selects the one with the least estimated cost.
+1.  **Atomicity:** The "All or Nothing" rule. A transaction is treated as a single unit; either all its operations happen, or none do. If a failure occurs halfway, the system rolls back to the start.
+2.  **Consistency:** A transaction must transform the database from one valid state to another. It ensures that database invariants (like constraints and foreign keys) are preserved.
+3.  **Isolation:** Multiple transactions executing concurrently must not interfere with each other. The intermediate state of one transaction should not be visible to others until it commits.
+4.  **Durability:** Once a transaction commits, its changes are permanent, even in the event of a system crash. This is typically achieved via write-ahead logging.
 
-#### **8. Write the different parameters for measuring the cost of a query.**
+### 7\. Explain 2PC (Two-Phase Commit) in detail with neat diagram.
 
-**Answer:**
-In distributed databases, the cost is a combination of:
+2PC ensures atomicity in distributed systems where multiple sites must agree to commit.
 
-1.  **Communication Cost (Dominant Factor):**
-      * Time required to transfer data over the network.
-      * $Cost = T_{transmission} * (Size of data) + T_{latency}$.
-2.  **I/O Cost (Disk Access):**
-      * Time to read/write blocks from the disk.
-      * Depends on seek time and rotational latency.
-3.  **CPU Cost:**
-      * Time taken by the processor to perform operations (sorting, joining, comparing).
+  * **Roles:** One site acts as the **Coordinator**, others are **Participants**.
+  * **Phase 1: The Voting Phase (Prepare)**
+    1.  Coordinator sends a `PREPARE` message to all participants.
+    2.  Participants execute the transaction locally (write to log) but do not commit.
+    3.  If successful, Participant sends `VOTE_COMMIT` and enters "Ready" state. If failed, sends `VOTE_ABORT`.
+  * **Phase 2: The Decision Phase (Commit/Abort)**
+    1.  If Coordinator receives `VOTE_COMMIT` from **ALL** participants:
+          * It sends a `GLOBAL_COMMIT` message.
+          * Participants commit changes and release locks.
+    2.  If Coordinator receives `VOTE_ABORT` from **ANY** participant (or times out):
+          * It sends a `GLOBAL_ABORT` message.
+          * Participants rollback.
+  * *Drawback:* **Blocking.** If the Coordinator fails after sending PREPARE, participants are locked in a "Ready" state and cannot proceed.
 
-<!-- end list -->
+### 8\. Explain 3PC (Three-Phase Commit) in detail with neat diagram.
 
-  * **Total Cost** = (Communication Cost) + (I/O Cost) + (CPU Cost). In Wide Area Networks (WAN), communication cost is usually the optimization target.
+3PC adds an extra phase to prevent the blocking problem of 2PC.
 
-#### **9. List responsibilities of Transaction Manager in Distributed Transaction Model.**
+  * **Phase 1: Voting Phase:** Same as 2PC (Coordinator asks for votes).
+  * **Phase 2: Pre-Commit Phase (New):**
+      * If all voted Commit, Coordinator sends `PRE_COMMIT`.
+      * Participants acknowledge this. *Crucially, this ensures all sites know that a commit is possible before actually doing it.*
+  * **Phase 3: Do-Commit Phase:**
+      * Coordinator sends `DO_COMMIT`.
+      * Participants finalize the transaction.
+  * *Benefit:* If the Coordinator fails, a new Coordinator can check if anyone received a `PRE_COMMIT`. If so, they can safely finish the commit; otherwise, they abort. No one is blocked indefinitely.
 
-**Answer:**
+### 9\. Explain Distributed concurrency control techniques and recovery.
 
-1.  **Transaction Initiation:** Starts the transaction and assigns a unique Transaction ID.
-2.  **Sub-transaction Generation:** Breaks the global transaction into sub-transactions for different sites.
-3.  **Coordination:** Coordinates with the Scheduler (Lock Manager) to acquire necessary locks.
-4.  **Commit/Abort Management:** Implements protocols like 2PC to ensure atomicity (all sites commit or all abort).
-5.  **Log Management:** Maintains logs (Undo/Redo) for recovery in case of failure.
-6.  **Deadlock Handling:** Detects global deadlocks across sites.
+  * **Distributed Concurrency Control:**
+      * **Locking (2PL):** A transaction must acquire locks on items before accessing them. In Distributed 2PL, a Lock Manager at each site manages local locks.
+      * **Timestamp Ordering (TO):** Each transaction is assigned a unique timestamp. Operations are ordered based on these timestamps. If an older transaction tries to access data modified by a younger one, it is rolled back.
+  * **Recovery in Distributed Databases:**
+      * **Logging:** Each site maintains a Write-Ahead Log (WAL).
+      * **Handling Site Failure:** When a site comes back online, it checks its log. If a transaction was committed, it Redoes; if incomplete, it Undoes.
+      * **Handling Network Partitioning:** If the network splits, the system must decide which partition can continue processing (usually the majority partition) to maintain consistency.
 
-#### **10. Explain the different methods of concurrency control in distributed database.**
-
-**Answer:**
-
-1.  **Locking Based (2PL - Two Phase Locking):**
-      * **Growing Phase:** Transaction acquires all necessary locks (Read/Write). Cannot release any.
-      * **Shrinking Phase:** Transaction releases locks. Cannot acquire any new ones.
-      * **Strict 2PL:** Holds exclusive locks until the transaction commits to prevent cascading rollbacks.
-2.  **Timestamp Ordering (TO):**
-      * No locks are used.
-      * Each transaction is given a unique timestamp ($TS$).
-      * Conflicts are resolved by checking timestamps: Older transactions gets priority. If a younger transaction tries to access data accessed by an older one in a conflicting way, it is aborted and restarted.
-3.  **Binary Locking:**
-      * Data items have two states: Locked (1) or Unlocked (0). Simple but limits concurrency (no distinction between Read/Write).
-
-#### **11. Explain 2PC (Two-Phase Commit) in detail.**
-
-**Answer:**
-2PC ensures atomicity in distributed transactions. It has a **Coordinator** (Transaction Manager) and **Participants** (Sites).
-
-**Phase 1: The Voting (Prepare) Phase**
-
-1.  Coordinator sends a `PREPARE` message to all participants.
-2.  Each participant executes the transaction locally up to the point of committing.
-3.  They write a log record (Undo/Redo).
-4.  If successful, they vote `READY` (Yes). If failed, they vote `ABORT` (No).
-
-**Phase 2: The Decision (Commit) Phase**
-
-1.  **If all votes are READY:** Coordinator decides to **COMMIT**.
-      * Sends `COMMIT` message to all participants.
-      * Participants make changes permanent and release resources.
-2.  **If any vote is ABORT (or timeout):** Coordinator decides to **ABORT**.
-      * Sends `ABORT` message.
-      * Participants rollback changes.
-3.  Coordinator writes the final decision to the log.
-
-#### **12. Compare 2PC and 3PC.**
-
-**Answer:**
+### 10\. Differentiate between 2PC and 3PC Protocol.
 
 | Feature | 2PC (Two-Phase Commit) | 3PC (Three-Phase Commit) |
 | :--- | :--- | :--- |
-| **Phases** | 2 (Prepare, Commit) | 3 (CanCommit, PreCommit, DoCommit) |
-| **Blocking** | **Blocking Protocol:** If Coordinator fails after sending Prepare, participants are blocked waiting for decision. | **Non-Blocking Protocol:** Introduces "PreCommit" state to avoid blocking on coordinator failure. |
-| **Fault Tolerance**| Lower. Cannot handle simultaneous coordinator and participant failure well. | Higher. Designed to handle site failures gracefully. |
-| **Complexity** | Simpler to implement. | Complex, high communication overhead. |
-| **Usage** | Widely used in practice (industry standard). | Rarely used due to high overhead (latency). |
+| **Phases** | Two: Voting, Decision. | Three: Voting, Pre-Commit, Do-Commit. |
+| **Blocking** | **Blocking Protocol.** If Coordinator fails, sites may wait indefinitely. | **Non-Blocking Protocol.** Timeouts allow sites to resolve the state. |
+| **Overhead** | Lower communication overhead (fewer messages). | Higher overhead (more round-trip messages). |
+| **Reliability** | Less reliable in case of site failure. | More reliable/resilient to failures. |
+
+### 11\. Write a short note on Query Evaluation plan.
+
+A **Query Evaluation Plan** (or Execution Plan) is a sequence of primitive operations (like selection, projection, join) used to execute a query.
+
+  * The Query Optimizer generates multiple plans and estimates the cost for each.
+  * It selects the plan with the **least cost** (fewest I/O operations or lowest network transfer).
+  * The plan is often represented as a **Tree**, where leaf nodes are relations and internal nodes are operators.
+
+### 12\. Write a short note on Query processing issues in Heterogenous Database.
+
+Heterogeneous databases use different hardware, software, or data models. Issues include:
+
+1.  **Schema Translation:** Mapping different local schemas (e.g., relational vs. object-oriented) to a global schema.
+2.  **Data Type Mismatch:** One DB might store "Salary" as a Float, another as a String.
+3.  **Semantic Heterogeneity:** Naming conflicts (e.g., "ID" in one DB is "Emp\_No" in another) or scaling differences (dollars vs. rupees).
+4.  **Query Translation:** Converting the global query into the specific query language (SQL, XQuery, etc.) of the local system.
+
+### 13\. Different parameters for measuring cost OR Transaction Manager Responsibilities.
+
+  * **Cost Parameters:**
+    1.  **Access Cost (I/O):** Time to read/write data blocks from disk.
+    2.  **CPU Cost:** Time spent processing data (sorting, joining) in memory.
+    3.  **Communication Cost:** (Most important in Distributed DB) Time and bandwidth used to transfer data between sites.
+  * **Responsibilities of Transaction Manager (TM):**
+    1.  **Coordination:** Starting and terminating transactions.
+    2.  **ACID Enforcement:** ensuring atomicity and isolation.
+    3.  **Communication:** Talking to the Scheduler and Data Manager.
+    4.  **Recovery:** maintaining logs to recover from failures.
 
 -----
 
-### **Module 3: Data Interoperability – XML and JSON**
+## Module 3: Data Interoperability – XML and JSON
 
-#### **13. Create an XML document of 'Restaurant Menu Card' and DTD.**
+### 14\. Explain Basic JSON syntax with data types.
 
-**Answer:**
-**XML Document:**
+**JSON (JavaScript Object Notation)** is a lightweight text format for data interchange.
 
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE menu SYSTEM "menu.dtd">
-<menu>
-  <section category="Starters">
-    <item veg="yes">
-      <name>Paneer Tikka</name>
-      <cost>250</cost>
-      <calories>300</calories>
-    </item>
-  </section>
-  <section category="Drinks">
-    <item veg="yes">
-      <name>Mojito</name>
-      <cost>150</cost>
-      <calories>120</calories>
-    </item>
-  </section>
-  <section category="Main Course">
-    <item veg="no">
-      <name>Chicken Curry</name>
-      <cost>400</cost>
-      <calories>550</calories>
-    </item>
-  </section>
-</menu>
-```
+  * **Syntax Rules:**
+      * Data is in name/value pairs (`"key": value`).
+      * Data is separated by commas.
+      * Curly braces `{}` hold **Objects**.
+      * Square brackets `[]` hold **Arrays**.
+  * **Data Types:**
+    1.  **String:** `"name": "John"`
+    2.  **Number:** `"age": 30` (Integer or Float)
+    3.  **Boolean:** `"registered": true`
+    4.  **Null:** `"middleName": null`
+    5.  **Object:** `"address": {"city": "Mumbai", "zip": 400001}`
+    6.  **Array:** `"hobbies": ["reading", "coding"]`
 
-**DTD Rules (`menu.dtd`):**
+### 15\. What is XML? Explain XML Schema document with example.
 
-```xml
-<!ELEMENT menu (section+)>
-<!ELEMENT section (item+)>
-<!ATTLIST section category CDATA #REQUIRED>
-<!ELEMENT item (name, cost, calories)>
-<!ATTLIST item veg (yes|no) "yes">
-<!ELEMENT name (#PCDATA)>
-<!ELEMENT cost (#PCDATA)>
-<!ELEMENT calories (#PCDATA)>
-```
+**XML (eXtensible Markup Language)** is a markup language designed to store and transport data. It uses tags (like HTML) but allows users to define their own tags.
 
-#### **14. Explain XML Schema (XSD) with example.**
-
-**Answer:**
-
-  * **XML Schema (XSD):** An XML-based alternative to DTD. It describes the structure of an XML document.
-  * **Advantages over DTD:**
-      * Written in XML (no separate syntax).
-      * Supports **Data Types** (Integer, String, Date, Boolean).
-      * Supports namespaces.
-
-**XSD Example (for above menu):**
-
-```xml
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-  <xs:element name="menu">
-    <xs:complexType>
-      <xs:sequence>
-        <xs:element name="section" maxOccurs="unbounded">
-          <xs:complexType>
-             <xs:sequence>
-               <xs:element name="item" maxOccurs="unbounded">
-                  <xs:complexType>
-                    <xs:sequence>
-                      <xs:element name="name" type="xs:string"/>
-                      <xs:element name="cost" type="xs:integer"/>
-                      <xs:element name="calories" type="xs:integer"/>
-                    </xs:sequence>
-                  </xs:complexType>
-               </xs:element>
-             </xs:sequence>
-             <xs:attribute name="category" type="xs:string"/>
-          </xs:complexType>
-        </xs:element>
-      </xs:sequence>
-    </xs:complexType>
-  </xs:element>
-</xs:schema>
-```
+  * **XML Schema (XSD):** An XML-based alternative to DTD. It describes the structure of an XML document. It supports **Data Types** (integer, string, date), which allows for stronger validation.
+  * **Example 1:**
+      * *XML:*
+        ```xml
+        <note>
+           <to>User</to>
+           <from>Admin</from>
+           <priority>1</priority>
+        </note>
+        ```
+      * *XSD:*
+        ```xml
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+          <xs:element name="note">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="to" type="xs:string"/>
+                <xs:element name="from" type="xs:string"/>
+                <xs:element name="priority" type="xs:integer"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:schema>
+        ```
+        * **Example 2:**
+          * *XML:*
+          ```xml
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE menu SYSTEM "menu.dtd">
+          <menu>
+            <section category="Starters">
+              <item veg="yes">
+                <name>Paneer Tikka</name>
+                <cost>250</cost>
+                <calories>300</calories>
+              </item>
+            </section>
+            <section category="Drinks">
+              <item veg="yes">
+                <name>Mojito</name>
+                <cost>150</cost>
+                <calories>120</calories>
+              </item>
+            </section>
+            <section category="Main Course">
+              <item veg="no">
+                <name>Chicken Curry</name>
+                <cost>400</cost>
+                <calories>550</calories>
+              </item>
+            </section>
+          </menu>
+          ```
+          * *DTD Rules:*
+          ```xml
+          <!ELEMENT menu (section+)>
+          <!ELEMENT section (item+)>
+          <!ATTLIST section category CDATA #REQUIRED>
+          <!ELEMENT item (name, cost, calories)>
+          <!ATTLIST item veg (yes|no) "yes">
+          <!ELEMENT name (#PCDATA)>
+          <!ELEMENT cost (#PCDATA)>
+          <!ELEMENT calories (#PCDATA)>
+          ```
+          * *XSD:*
+          ```xml
+          <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+            <xs:element name="menu">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="section" maxOccurs="unbounded">
+                    <xs:complexType>
+                       <xs:sequence>
+                         <xs:element name="item" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:sequence>
+                                <xs:element name="name" type="xs:string"/>
+                                <xs:element name="cost" type="xs:integer"/>
+                                <xs:element name="calories" type="xs:integer"/>
+                              </xs:sequence>
+                            </xs:complexType>
+                         </xs:element>
+                       </xs:sequence>
+                       <xs:attribute name="category" type="xs:string"/>
+                    </xs:complexType>
+                  </xs:element>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:schema>
+          ```
 
 #### **15. Explain JSON Data Types and Valid JSON.**
 
@@ -328,151 +313,159 @@ In distributed databases, the cost is a combination of:
 
 **MCQ Code:** `JSON.parse('{"name":"John"}')` returns a valid object.
 
+
+### 16\. Differentiate between XML and JSON.
+
+| Feature | XML | JSON |
+| :--- | :--- | :--- |
+| **Format** | Markup Language (Tags). | JavaScript Object style. |
+| **Verbosity** | Heavy/Verbose (Closing tags require more characters). | Lightweight (Compact). |
+| **Parsing** | Slower (requires DOM/SAX parsers). | Faster (native to JS). |
+| **Data Types** | No inherent types (everything is text unless XSD used). | Supports Number, String, Boolean, Array natively. |
+| **Usage** | Complex documents, configuration files. | Web APIs, Mobile apps, NoSQL storage. |
+
 -----
 
-### **Module 4: NoSQL Distribution Model**
+## Module 4: NoSQL Distribution Model
 
-#### **16. Compare SQL and NoSQL.**
+### 17\. Explain CAP theorem NoSQL Database.
 
-**Answer:**
+The **CAP Theorem** states that a distributed computer system can only provide **two** of the following three guarantees:
 
-| Feature | SQL (RDBMS) | NoSQL |
-| :--- | :--- | :--- |
-| **Schema** | Fixed, Rigid schema. | Dynamic, Flexible schema. |
-| **Scalability** | Vertical (Scale-up: Add RAM/CPU). | Horizontal (Scale-out: Add servers). |
-| **Data Model** | Relational (Tables, Rows). | Key-Value, Document, Graph, Column. |
-| **Transaction** | ACID properties (Strong consistency). | BASE properties (Eventual consistency). |
-| **Examples** | MySQL, Oracle, PostgreSQL. | MongoDB, Cassandra, Redis, Neo4j. |
+[Image of CAP Theorem Diagram]
 
-#### **17. Explain CAP Theorem.**
-
-**Answer:**
-The CAP Theorem states that a distributed computer system can efficiently provide only **two** of the following three guarantees at the same time:
-
-1.  **Consistency (C):** Every read receives the most recent write or an error. (All nodes see the same data at the same time).
+1.  **Consistency (C):** Every read receives the most recent write or an error. (All nodes have the same data at the same time).
 2.  **Availability (A):** Every request receives a (non-error) response, without the guarantee that it contains the most recent write.
 3.  **Partition Tolerance (P):** The system continues to operate despite an arbitrary number of messages being dropped or delayed by the network between nodes.
 
 <!-- end list -->
 
-  * **CP Systems:** MongoDB, HBase (Trade Availability for Consistency).
-  * **AP Systems:** Cassandra, DynamoDB (Trade Consistency for Availability).
-  * **CA Systems:** RDBMS (Traditional, single-site).
+  * *NoSQL Choice:* Since P is mandatory in distributed systems, NoSQL DBs choose either **CP** (MongoDB, HBase) or **AP** (Cassandra, CouchDB).
 
+### 18\. Explain Replication and Sharding in NoSQL.
 
+  * **Replication:** Copying data to multiple servers to ensure High Availability.
+      * *Master-Slave:* One node takes writes, others replicate for reads.
+      * *Peer-to-Peer:* Any node can take writes.
+  * **Sharding:** Partitioning data across multiple servers (shards) to ensure Scalability.
+      * Data is split based on a **Shard Key**.
+      * Each shard holds a subset of the total data.
+      * Allows the system to handle more data than fits on a single machine.
 
-#### **18. Explain ACID vs BASE.**
+### 19\. Explain benefits of NoSQL.
 
-**Answer:**
+1.  **Elastic Scalability:** Designed for horizontal scaling (adding commodity servers) rather than vertical scaling.
+2.  **Flexible Schema:** No predefined schema is required. You can add fields on the fly. Useful for unstructured data.
+3.  **High Performance:** Optimized for specific data models (e.g., Key-Value pairs) allowing faster lookups than complex SQL joins.
+4.  **Big Data Capability:** Can handle high velocity, volume, and variety of data (3Vs).
 
-  * **ACID (RDBMS):**
+### 20\. Differentiate between SQL and NoSQL.
 
-      * **Atomicity:** All or nothing.
-      * **Consistency:** Valid state to valid state.
-      * **Isolation:** Transactions do not interfere.
-      * **Durability:** Data is saved permanently.
-      * *Focus:* Reliability and Strong Consistency.
+| Feature | SQL (Relational) | NoSQL (Non-Relational) |
+| :--- | :--- | :--- |
+| **Structure** | Table-based (Rows/Columns). | Document, Key-Value, Graph, Column. |
+| **Schema** | Rigid/Fixed. | Dynamic/Flexible. |
+| **Scalability** | Vertical (Scale Up). | Horizontal (Scale Out). |
+| **Relations** | Supports JOINs. | JOINs typically handled in app code. |
+| **Transactions** | ACID (Strong consistency). | BASE (Eventual consistency). |
 
-  * **BASE (NoSQL):**
+### 21\. Differentiate between ACID and BASE.
 
-      * **Basically Available:** The system guarantees availability (data may be stale).
-      * **Soft state:** The state of the system may change over time, even without input (due to replication).
-      * **Eventual consistency:** The system will eventually become consistent once updates propagate.
-      * *Focus:* Scalability and Performance.
+  * **ACID (SQL):** Focuses on consistency.
+      * **A**tomicity, **C**onsistency, **I**solation, **D**urability.
+      * System is pessimistic; assumes failures are rare and data must always be perfect.
+  * **BASE (NoSQL):** Focuses on availability.
+      * **B**asically **A**vailable: System guarantees availability.
+      * **S**oft state: State may change over time, even without input (due to replication).
+      * **E**ventually consistent: The system will eventually become consistent once inputs stop.
 
-#### **19. Explain Replication and Sharding in NoSQL.**
+### 22\. Write a short note on NoSQL data modelling.
 
-**Answer:**
+NoSQL modeling differs from RDBMS normalization.
 
-  * **Sharding (Horizontal Scaling):**
-      * Dividing the data set into smaller chunks (shards) and storing them across multiple servers.
-      * *Benefit:* Increases **Write** capacity and storage limit.
-      * *Example:* Users A-M on Server 1, N-Z on Server 2.
-  * **Replication (Availability):**
-      * Copying the same data to multiple servers.
-      * *Benefit:* Increases **Read** capacity and Fault Tolerance (if one server fails, another has the data).
-      * *Master-Slave Replication:* Writes to Master, Reads from Slaves.
-
------
-
-### **Module 5: NoSQL using MongoDB**
-
-#### **20. Explain MongoDB CRUD Operations.**
-
-**Answer:**
-
-1.  **Create:**
-      * `db.collection.insertOne({name: "A"})`
-      * `db.collection.insertMany([{name: "A"}, {name: "B"}])`
-2.  **Read:**
-      * `db.collection.find()` (Select all)
-      * `db.collection.find({age: {$gt: 18}})` (With condition)
-3.  **Update:**
-      * `db.collection.updateOne({name: "A"}, {$set: {age: 20}})`
-      * `db.collection.updateMany(...)`
-4.  **Delete:**
-      * `db.collection.deleteOne({name: "A"})`
-      * `db.collection.deleteMany(...)`
-
-#### **21. Explain MongoDB `update()` vs `save()` methods.**
-
-**Answer:**
-
-  * **`update()`:**
-      * Modifies an existing document.
-      * Requires a query condition and an update operator (like `$set`).
-      * *Example:* `db.users.update({id: 1}, {$set: {name: "New"}})` - Updates only the name field.
-  * **`save()`:**
-      * Acts as an Insert or Replace.
-      * If the document contains an `_id` that exists, it **replaces** the entire document.
-      * If `_id` is missing or does not exist, it **inserts** a new document.
-      * *Example:* `db.users.save({_id: 1, name: "New"})` - Replaces the whole document with ID 1.
-
-#### **22. Explain MongoDB Sharding (Concepts: Shard Key, Chunks, Query Router).**
-
-**Answer:**
-Sharding is MongoDB's method for horizontal scaling.
-
-1.  **Shard:** A single MongoDB instance (or replica set) that holds a subset of the data.
-2.  **Shard Key:** An indexed field (e.g., `user_id`) used to partition data. It determines which shard a document goes to.
-3.  **Chunks:** MongoDB divides the data into blocks called chunks based on the Shard Key range.
-4.  **Config Servers:** Store metadata (which chunk is on which shard).
-5.  **Query Router (Mongos):** Interface for the client. It checks Config Servers and routes the client's query to the correct Shard(s).
+  * **Aggregates:** Data is often stored together in a single document (nested) rather than split into multiple tables.
+  * **Denormalization:** Data duplication is encouraged to optimize for **read performance** (avoids joins).
+  * **Application-Side Joins:** Relationships are often resolved by the application code rather than the database.
+  * **Schemaless:** Fields can differ between documents in the same collection.
 
 -----
 
-### **Module 6: Trends in Advance Databases**
+## Module 5: NoSQL using MongoDB
 
-#### **23. What is a Graph Database? Describe with Neo4j.**
+### 23\. Explain MongoDB Sharding.
 
-**Answer:**
-A **Graph Database** uses graph structures for semantic queries with nodes, edges, and properties to represent and store data. It excels at managing highly connected data (e.g., Social Networks).
+Sharding in MongoDB distributes data across a cluster.
 
-**Neo4j Concepts:**
+  * **Components:**
+    1.  **Shard:** A replica set that holds a subset of the data.
+    2.  **Mongos (Query Router):** Interfaces with applications. It directs operations to the appropriate shard.
+    3.  **Config Servers:** Store metadata and configuration settings for the cluster (mapping of chunks to shards).
+  * **Shard Key:** A field chosen to partition the data. MongoDB divides data into **Chunks** based on this key and distributes chunks evenly.
 
-1.  **Nodes:** Entities (e.g., Person, Movie). Represented by circles.
-2.  **Relationships (Edges):** Connect nodes (e.g., `FRIENDS_WITH`, `ACTED_IN`). Must have a direction and type.
-3.  **Properties:** Key-value pairs stored on Nodes or Relationships (e.g., `name: "John"`).
-4.  **Labels:** Group nodes into sets (e.g., `:Person`).
-5.  **Cypher:** The query language for Neo4j (ASCII-art style).
-      * *Example:* `MATCH (p:Person)-[:FRIENDS]->(f) RETURN p, f`
+### 24\. Explain MongoDB CRUD Operations.
 
-#### **24. Explain Spatial Database.**
+1.  **Create:** `db.collection.insertOne({name: "A", age: 10})` or `insertMany([...])`.
+2.  **Read:** `db.collection.find({age: {$gt: 18}})` retrieves documents matching criteria.
+3.  **Update:** `db.collection.updateOne({name: "A"}, {$set: {age: 11}})` modifies existing documents.
+4.  **Delete:** `db.collection.deleteOne({name: "A"})` removes documents.
 
-**Answer:**
+### 25\. Explain MongoDB Sharding (Repeated) and basic data types.
 
-  * **Definition:** Optimized to store and query data that represents objects defined in geometric space (maps, GPS data).
+*(Sharding is covered in Q23. Focusing on Types)*:
+MongoDB uses **BSON** (Binary JSON). Common types:
+
+  * **String:** UTF-8 text.
+  * **Integer/Double:** Numeric values.
+  * **Boolean:** true/false.
+  * **Array:** Lists of values.
+  * **Object:** Embedded documents.
+  * **ObjectId:** Unique primary key (automatic).
+  * **Date:** ISODate format.
+
+-----
+
+## Module 6: Trends in Advance Databases
+
+### 26\. What is Graph database? What are the features of Graph database?
+
+A Graph Database uses graph structures with nodes, edges, and properties to represent and store data.
+
+  * **Features:**
+    1.  **Nodes:** Entities (e.g., Person, City).
+    2.  **Edges:** Relationships (e.g., LIVES\_IN, KNOWS). Edges are "first-class citizens" and stored directly.
+    3.  **Properties:** Key-value pairs attached to nodes or edges.
+    4.  **Index-Free Adjacency:** Traversing relationships is extremely fast because pointers are stored physically; no index lookups needed for joins.
+
+### 27\. Explain Spatial Database in details.
+
+A Spatial Database is optimized to store and query data that represents objects defined in a geometric space (GIS).
+
   * **Data Types:**
-      * **Vector Data:** Points (GPS), Lines (Roads), Polygons (Countries).
-      * **Raster Data:** Grid of cells/pixels (Satellite images).
-  * **Indexing:** Uses specialized indices like **R-Trees** or **Quad-Trees** for fast spatial querying (e.g., "Find all ATMs within 1km").
+      * **Point:** (x, y) coordinates (e.g., GPS location).
+      * **LineString:** A path (e.g., a road or river).
+      * **Polygon:** A closed area (e.g., a park or country boundary).
+  * **Indexing:** Uses specialized indices like **R-Trees** or **Quad-Trees** to efficiently query spatial data (e.g., "Find all restaurants within 5km").
+  * **Operations:** Distance calculation, Intersection, containment.
 
-#### **25. Explain Temporal Database.**
+### 28\. Explain Temporal database in details.
 
-**Answer:**
-A database with built-in support for handling time-sensitive data. It tracks *when* data happened.
+A Temporal Database handles time-varying data, allowing queries about the past, present, and future.
 
-  * **Valid Time:** The time period when a fact was true in the **real world**. (e.g., John lived in Mumbai from 2010 to 2015).
-  * **Transaction Time:** The time period when the data was stored in the **database**. (e.g., Data entered on 2024-01-01).
-  * **Bi-temporal:** Supports both.
-  * **Benefit:** Allows historical queries ("What was John's salary in 2012?").
+  * **Time Dimensions:**
+    1.  **Valid Time:** The time period when a fact is true in the real world. (e.g., John was Manager from 2010 to 2012).
+    2.  **Transaction Time:** The time period when the fact was stored in the database.
+  * **Types:**
+      * *Uni-Temporal:* Supports only one dimension.
+      * *Bi-Temporal:* Supports both Valid and Transaction time. Allows "Time Travel" queries (e.g., "What did we think John's salary was back in 2011?").
+
+### 29\. Explain Graph Database using Neo4j (Case Study).
+
+**Neo4j** is the most popular Graph Database.
+
+  * **Model:** It uses the **Label Property Graph** model.
+      * Nodes have **Labels** (e.g., `:Person`).
+      * Relationships have **Types** (e.g., `:FRIEND`).
+  * **Language:** Uses **Cypher** Query Language (ASCII-Art style).
+      * *Example:* `MATCH (p:Person)-[:FRIEND]->(f) RETURN p, f`
+  * **Use Cases:** Social Networks, Fraud Detection (linking rings of thieves), Recommendation Engines (User -\> Bought -\> Product).
+  * **Storage:** It uses native graph storage (pointers), making deep traversals (joins) constant time operations.
