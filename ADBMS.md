@@ -219,73 +219,73 @@ Heterogeneous databases use different hardware, software, or data models. Issues
           </xs:element>
         </xs:schema>
         ```
-        * **Example 2:**
-          * *XML:*
-          ```xml
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE menu SYSTEM "menu.dtd">
-          <menu>
-            <section category="Starters">
-              <item veg="yes">
-                <name>Paneer Tikka</name>
-                <cost>250</cost>
-                <calories>300</calories>
-              </item>
-            </section>
-            <section category="Drinks">
-              <item veg="yes">
-                <name>Mojito</name>
-                <cost>150</cost>
-                <calories>120</calories>
-              </item>
-            </section>
-            <section category="Main Course">
-              <item veg="no">
-                <name>Chicken Curry</name>
-                <cost>400</cost>
-                <calories>550</calories>
-              </item>
-            </section>
-          </menu>
-          ```
-          * *DTD Rules:*
-          ```xml
-          <!ELEMENT menu (section+)>
-          <!ELEMENT section (item+)>
-          <!ATTLIST section category CDATA #REQUIRED>
-          <!ELEMENT item (name, cost, calories)>
-          <!ATTLIST item veg (yes|no) "yes">
-          <!ELEMENT name (#PCDATA)>
-          <!ELEMENT cost (#PCDATA)>
-          <!ELEMENT calories (#PCDATA)>
-          ```
-          * *XSD:*
-          ```xml
-          <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
-            <xs:element name="menu">
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="section" maxOccurs="unbounded">
-                    <xs:complexType>
-                       <xs:sequence>
-                         <xs:element name="item" maxOccurs="unbounded">
-                            <xs:complexType>
-                              <xs:sequence>
-                                <xs:element name="name" type="xs:string"/>
-                                <xs:element name="cost" type="xs:integer"/>
-                                <xs:element name="calories" type="xs:integer"/>
-                              </xs:sequence>
-                            </xs:complexType>
-                         </xs:element>
-                       </xs:sequence>
-                       <xs:attribute name="category" type="xs:string"/>
-                    </xs:complexType>
-                  </xs:element>
-                </xs:sequence>
-              </xs:complexType>
-            </xs:element>
-          </xs:schema>
-          ```
+  * **Example 2:**
+    * *XML:*
+     ```xml
+     <?xml version="1.0" encoding="UTF-8"?>
+     <!DOCTYPE menu SYSTEM "menu.dtd">
+     <menu>
+       <section category="Starters">
+         <item veg="yes">
+           <name>Paneer Tikka</name>
+           <cost>250</cost>
+           <calories>300</calories>
+         </item>
+       </section>
+       <section category="Drinks">
+         <item veg="yes">
+           <name>Mojito</name>
+           <cost>150</cost>
+           <calories>120</calories>
+         </item>
+       </section>
+       <section category="Main Course">
+         <item veg="no">
+           <name>Chicken Curry</name>
+           <cost>400</cost>
+           <calories>550</calories>
+         </item>
+       </section>
+     </menu>
+     ```
+    * *DTD Rules:*
+     ```xml
+     <!ELEMENT menu (section+)>
+     <!ELEMENT section (item+)>
+     <!ATTLIST section category CDATA #REQUIRED>
+     <!ELEMENT item (name, cost, calories)>
+     <!ATTLIST item veg (yes|no) "yes">
+     <!ELEMENT name (#PCDATA)>
+     <!ELEMENT cost (#PCDATA)>
+     <!ELEMENT calories (#PCDATA)>
+     ```
+    * *XSD:*
+     ```xml
+     <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+       <xs:element name="menu">
+         <xs:complexType>
+           <xs:sequence>
+             <xs:element name="section" maxOccurs="unbounded">
+               <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="item" maxOccurs="unbounded">
+                       <xs:complexType>
+                         <xs:sequence>
+                           <xs:element name="name" type="xs:string"/>
+                           <xs:element name="cost" type="xs:integer"/>
+                           <xs:element name="calories" type="xs:integer"/>
+                         </xs:sequence>
+                       </xs:complexType>
+                    </xs:element>
+                  </xs:sequence>
+                  <xs:attribute name="category" type="xs:string"/>
+               </xs:complexType>
+             </xs:element>
+           </xs:sequence>
+         </xs:complexType>
+       </xs:element>
+     </xs:schema>
+     ```
 
 #### **15. Explain JSON Data Types and Valid JSON.**
 
